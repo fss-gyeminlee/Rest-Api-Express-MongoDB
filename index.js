@@ -2,7 +2,9 @@ require('dotenv').config();
 const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser')
 const mongoString = process.env.DATABASE_URL;
+
 
 mongoose.connect(mongoString);
 const database = mongoose.connection;
@@ -17,6 +19,8 @@ database.once('connected', () => {
 const app = express();
 app.use(cors())
 app.use(express.json());
+app.use(express.urlencoded({extended: true, limit: '1mb'}));
+
 
 const routes = require('./routes/routes');
 
