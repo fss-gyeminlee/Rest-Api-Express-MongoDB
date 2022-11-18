@@ -5,10 +5,19 @@ const escapeHtml = require('escape-html')
 const router = express.Router();
 
 
+router.get('/landing/:path', async (req, res) => {
+    try {
+        const data = await Landing.findOne({"path": req.params.path})
+        res.json(data)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
 router.post('/landnig/post', async (req, res) => {
     const data = new Landing({
         path: req.body.path,
-        html: escapeHtml(req.body.html)
+        html: req.body.html
     })
     try {
         const dataToSave = await data.save();
@@ -18,16 +27,16 @@ router.post('/landnig/post', async (req, res) => {
     }
 })
 
-router.get('/landing/:path', async (req, res) => {
+router.put('/landing/:path', async (req, res) => {
     try {
-        console.log(req.params.path)
-        const data = await Landing.findOne({"path": req.params.path})
-        res.json(data)
+        const filter = {path: req.params.path};
+        const update = {html: req.body.html};
+        const result = await Landing.findOneAndUpdate(filter, update, {new: true})
+        res.send(result)
     } catch (error) {
         res.status(500).json({message: error.message})
     }
 })
-
 
 router.post('/post', async (req, res) => {
     const data = new Model({
